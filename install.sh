@@ -1,7 +1,7 @@
 #!/bin/bash -ex
 
 # Переменные
-packages=('git' 'gcc' 'tar' 'gzip' 'libreadline-dev' 'make' 'zlib1g' 'zlib1g-dev' 'flex' 'bison' 'perl' 'python3' 'tcl' 'gettext' 'odbc-postgresql' 'libreadline-dev' 'pgadmin4')
+packages=('git' 'gcc' 'tar' 'gzip' 'libreadline-dev' 'make' 'zlib1g' 'zlib1g-dev' 'flex' 'bison' 'perl' 'python3' 'tcl' 'gettext' 'odbc-postgresql' 'libreadline-dev')
 rfolder='/postgres'
 dfolder='/postgres/data'
 gitloc='git://git.postgresql.org/git/postgresql.git'
