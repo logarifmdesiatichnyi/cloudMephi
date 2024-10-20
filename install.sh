@@ -12,11 +12,6 @@ sudo apt update
 # Установка PostgreSQL 15
 sudo apt -y install postgresql-15
 
-# Переход на пользователя postgres и проверка подключения к базе
-sudo -i -u postgres <<EOF
-psql -c '\conninfo'
-EOF
-
 # Установка и настройка pgAdmin
 
 # Проверка статуса службы PostgreSQL
