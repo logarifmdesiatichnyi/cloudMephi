@@ -10,7 +10,7 @@ wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-
 sudo apt update
 
 # Установка PostgreSQL 15
-sudo apt -y install postgresql-15
+sudo apt -y install postgresql-14
 
 # Установка и настройка pgAdmin
 
@@ -33,6 +33,9 @@ fi
 
 # Настройка конфигурации pgAdmin для работы на 0.0.0.0
 sudo sed -i "s/127.0.0.1/0.0.0.0/" /etc/pgadmin4/config_local.py
+
+# Запуск скрипта настройки pgAdmin
+sudo /usr/pgadmin4/bin/setup-web.sh
 
 # Разрешение порта 80 в firewall
 sudo ufw allow 80/tcp
