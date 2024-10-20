@@ -49,6 +49,10 @@ export PATH
 EOL
 
 # Установка pgAdmin
+systemctl status postgresql
+sudo wget https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo apt-key add packages_pgadmin_org.pub
+echo "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > sudo tee /etc/apt/sources.list.d/pgadmin4.list
+sudo apt update
 sudo apt install -y pgadmin4
 sudo sed -i "s/127.0.0.1/0.0.0.0/" /etc/pgadmin4/config_local.py
 sudo ufw allow 80/tcp
