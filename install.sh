@@ -1,67 +1,40 @@
 #!/bin/bash -ex
 
-# Переменные
-packages=('git' 'gcc' 'tar' 'gzip' 'libreadline-dev' 'make' 'zlib1g' 'zlib1g-dev' 'flex' 'bison' 'perl' 'python3' 'tcl' 'gettext' 'odbc-postgresql' 'libreadline-dev')
-rfolder='/postgres'
-dfolder='/postgres/data'
-gitloc='git://git.postgresql.org/git/postgresql.git'
-sysuser='postgres'
-helloscript='/home/leewalker/scripts/hello.sql'
-logfile='psqlinstall-log'
+# Добавление репозитория PostgreSQL
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
-# Установка пакетов
-sudo apt-get update -y >> $logfile
-sudo apt-get install ${packages[@]} -y >> $logfile
+# Импорт ключа для проверки пакетов PostgreSQL
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 
-# Создание директорий
-sudo mkdir -p $dfolder >> $logfile
+# Обновление списка пакетов и установка PostgreSQL
+sudo apt update
+sudo apt -y install postgresql
 
-# Создание системного пользователя
-sudo adduser --system $sysuser >> $logfile
+# Переход на пользователя postgres и проверка подключения к базе
+sudo -i -u postgres <<EOF
+psql -c '\conninfo'
+EOF
 
-# Скачивание PostgreSQL
-git clone $gitloc >> $logfile
+# Установка и настройка pgAdmin
 
-# Установка PostgreSQL
-~/postgresql/configure --prefix=$rfolder --datarootdir=$dfolder >> $logfile
-make >> $logfile
-sudo make install >> $logfile
-
-# Настройка прав
-sudo chown postgres $dfolder >> $logfile
-
-# Инициализация базы данных
-sudo -u postgres $rfolder/bin/initdb -D $dfolder/db >> $logfile
-
-# Запуск PostgreSQL
-sudo -u postgres $rfolder/bin/pg_ctl -D $dfolder/db -l $dfolder/logfilePSQL start >> $logfile
-
-# Добавление PostgreSQL в автозагрузку
-sudo sed -i '$isudo -u postgres /postgres/bin/pg_ctl -D /postgres/data/db -l /postgres/data/logfilePSQL start' /etc/rc.local >> $logfile
-
-# Добавление переменных окружения
-cat << EOL | sudo tee -a /etc/profile
-
-LD_LIBRARY_PATH=/postgres/lib
-export LD_LIBRARY_PATH
-PATH=/postgres/bin:$PATH
-export PATH
-EOL
-
-# Установка pgAdmin
+# Проверка статуса службы PostgreSQL
 systemctl status postgresql
-sudo wget https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo apt-key add packages_pgadmin_org.pub
-echo "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > sudo tee /etc/apt/sources.list.d/pgadmin4.list
+
+# Добавление ключа и репозитория для pgAdmin
+wget --quiet -O - https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo apt-key add -
+
+# Добавление репозитория для pgAdmin4
+sudo sh -c 'echo "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/$(lsb_release -cs) pgadmin4 main" > /etc/apt/sources.list.d/pgadmin4.list'
+
+# Обновление списка пакетов и установка pgAdmin4
 sudo apt update
 sudo apt install -y pgadmin4
+
+# Изменение конфигурации pgAdmin для работы на 0.0.0.0 (доступ с любого IP)
 sudo sed -i "s/127.0.0.1/0.0.0.0/" /etc/pgadmin4/config_local.py
+
+# Разрешение порта 80 в firewall
 sudo ufw allow 80/tcp
+
+# Перезапуск Apache для применения изменений
 sudo systemctl restart apache2
-
-# Запуск hello.sql
-sleep 5
-$rfolder/bin/psql -U postgres -f $helloscript
-
-# Запрос к базе данных
-/postgres/bin/psql -c 'select * from hello;' -U psqluser hello_postgres;
-
