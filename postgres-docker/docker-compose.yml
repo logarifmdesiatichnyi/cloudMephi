@@ -1,4 +1,4 @@
-version: '3.3'  # Установите поддерживаемую версию
+version: '3.3'
 
 services:
   postgres:
@@ -17,7 +17,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_USE_SESSION_DB: 'False'  # Отключаем CSRF-токен
+      PGADMIN_CONFIG_USE_SESSION_DB: 'False'
     ports:
       - "8081:80"
     depends_on:
