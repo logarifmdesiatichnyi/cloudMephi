@@ -1,0 +1,28 @@
+version: '3.3'  # Установите поддерживаемую версию
+
+services:
+  postgres:
+    image: my-postgres-image
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5433:5433"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_USE_SESSION_DB: 'False'  # Отключаем CSRF-токен
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+
