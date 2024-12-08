@@ -1,39 +1,37 @@
 #cloud-config
-debug:
-  verbose: true
+debug: true
+
 cloud_init_modules:
- - migrator
- - seed_random
- - write-files
- - growpart
- - resizefs
- - set_hostname
- - update_hostname
- - update_etc_hosts
- - users-groups
- - ssh
- - runcmd
+  - migrator
+  - seed_random
+  - write-files
+  - growpart
+  - resizefs
+  - set_hostname
+  - update_hostname
+  - update_etc_hosts
+  - users-groups
+  - ssh
+  - runcmd
+
 users:
   - name: user
     groups: sudo
     lock_passwd: false
-    passwd: user
-    sudo: ALL=(ALL) NOPASSWD:ALL
+    passwd: $6$rounds=4096$randomsalt$randomhashedpassword
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
     shell: /bin/bash
-    expire: False
+
 chpasswd:
   list:
     - "user:user"
-  expire: False
+  expire: false
 
 timezone: "Europe/Moscow"
 fqdn: "postgres"
 
 runcmd:
-  - sudo -i 
   - mkdir -p /opt/postgres
-  - cd /opt/postgres
-  - git clone https://github.com/logarifmdesiatichnyi/cloudMephi.git .
+  - git clone https://github.com/logarifmdesiatichnyi/cloudMephi.git /opt/postgres
   - chmod -R 777 /opt/postgres
-  - ./opt/postgres/install_postgres.sh -i
-
+  - bash /opt/postgres/install_postgres.sh -i
