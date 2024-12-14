@@ -11,7 +11,7 @@ terraform {
 
 provider "rustack" {
   api_endpoint = "https://cloud.mephi.ru"
-  token        = "58949411314cb198b2cfca84fb31c80d937babaf"
+  token        = ""
 }
 
 # Данные проекта
