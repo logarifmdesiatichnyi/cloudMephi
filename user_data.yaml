@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+#cloud-config
+>>>>>>> 513899334862e9a60c31013c5dace58909dc63b6
 debug:
   verbose: true
 cloud_init_modules:
