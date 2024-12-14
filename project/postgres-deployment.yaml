@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: ah
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:15
+          env:
+            - name: POSTGRES_USER
+              value: "yourusername"
+            - name: POSTGRES_PASSWORD
+              value: "yourpassword"
+            - name: POSTGRES_DB
+              value: "yourdbname"
+          ports:
+            - containerPort: 5432
